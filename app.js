@@ -51,26 +51,24 @@ app.post("/compose",function(req,res){
     content : req.body.postContent
   });
   post.save();
-  
+
   res.redirect("/");
 });
 
-app.get("/posts/:postName",function(req,res){
-  const requestedTitle = req.params.postName;
+app.get("/posts/:postId",function(req,res){
+  const requestedPostId = req.params.postId;
 
-  posts.forEach(function (post){
-    const storedTitle = post.title;
-
-    if (_.lowerCase(storedTitle) === _.lowerCase(requestedTitle)){
-      res.render("post",{
-        blogTitle:post.title,
-        blogContent:post.content
-      });
-    }
-  });
+  Post.findOne({_id: requestedPostId}, function(err, post){
+    if(err){
+      console.log(err);
+    }else{
+        res.render("post",{
+          blogTitle:post.title,
+          blogContent:post.content
+        });
+      }
+    });
 });
-
-
 
 
 app.listen(3000, function() {
