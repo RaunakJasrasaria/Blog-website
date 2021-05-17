@@ -20,13 +20,18 @@ const postSchema = new mongoose.Schema({
 
 const Post = mongoose.model("Post",postSchema);
 
-let posts = [];
-
 app.get("/",function(req,res){
-  res.render('home',{
+  Post.find(function(err,posts){
+    if(err){
+      console.log(err);
+    }else{
+      res.render('home',{
 
-    posts:posts
+        posts:posts
+      });
+    }
   });
+
 });
 
 app.get("/contact",function(req,res){
@@ -41,11 +46,12 @@ app.get("/compose",function(req,res){
   res.render('Compose');
 });
 app.post("/compose",function(req,res){
-  const post = {
+  const post = new Post ({
     title : req.body.postTitle,
     content : req.body.postContent
-  };
-  posts.push(post);
+  });
+  post.save();
+  
   res.redirect("/");
 });
 
